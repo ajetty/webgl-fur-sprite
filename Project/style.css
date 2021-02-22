@@ -1,3 +1,7 @@
 canvas {
     border: 5px solid black ;
 }
+
+html, body {
+    height: 100%;
+}

@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>WebGL2 Fur</title>
     <link href="style.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 
 <script type="text/javascript" src="../Common/initShaders2.js"></script>
@@ -11,8 +15,35 @@
 <script type="text/javascript" src="CreateSphere.js"></script>
 <script type="text/javascript" src="web.js"></script>
 <body>
-<canvas id="gl-canvas" width="512" height="512">
-    Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+
+
+<div class="container h-100">
+    <div class="row h-100">
+        <div class="col-md-auto mx-auto my-auto mr-0">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="gl-canvas" width="512" height="512" style="float: none; margin: 0 auto;">
+                            Oops ... your browser doesn't support the HTML5 canvas element
+                        </canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                        <!--                        <div class="slidecontainer">-->
+                        <!--                            <input type="range" min="1" max="100" value="50" step="5" class="slider" id="fov" oninput="this.nextElementSibling.value = this.value"-->
+                        <!--                                onchange="setXProspective(this.value, this.step, this.max)">-->
+                        <!--                            <output>50</output>-->
+
+                        <!--                        </div>-->
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
