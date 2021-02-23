@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../Common/initShaders2.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
 <script type="text/javascript" src="CreateSphere.js"></script>
+<script type="text/javascript" src="Menu.js"></script>
 <script type="text/javascript" src="web.js"></script>
 <body>
 
@@ -30,14 +31,19 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">Camera Controls</h5>
                         <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                        <!--                        <div class="slidecontainer">-->
-                        <!--                            <input type="range" min="1" max="100" value="50" step="5" class="slider" id="fov" oninput="this.nextElementSibling.value = this.value"-->
-                        <!--                                onchange="setXProspective(this.value, this.step, this.max)">-->
-                        <!--                            <output>50</output>-->
+                        <div class="slidecontainer">
+                            <label>Field of View:&nbsp;&nbsp;&nbsp;</label><label id="sliderFOV">50</label><br>
+                            1<input type="range" min="1" max="100" value="50" step="1" class="slider" id="fovSlider"
+                                   oninput="changeFOV(this.value)">100
+                        </div>
+                        <div class="slidecontainer">
+                            <label>Rotate:&nbsp;&nbsp;&nbsp;</label><label id="sliderRotateXZValue">0</label><label>&nbsp;&nbsp;&nbsp;degrees</label><br>
+                            0<input type="range" min="0" max="360" value="0" step="1" class="slider" id="rotateXZSlider"
+                                   oninput="changeRotateXZ(this.value)">360
+                        </div>
 
-                        <!--                        </div>-->
                         <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                     </div>
                 </div>

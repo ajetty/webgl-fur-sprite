@@ -2,6 +2,7 @@
 
 //draw a sphere
 //create gui interface with bootstrap
+//https://webgl2fundamentals.org/webgl/lessons/webgl-visualizing-the-camera.html
 
 let renderWindow = function () {
     let canvas;
@@ -10,11 +11,16 @@ let renderWindow = function () {
 
     let sphere;
 
-    let near = -10;
-    let far = 10;
-    let radius = 6.0;
+    let near = 0.1;
+    let far = 14.0;
+    let radius = 7.0;
     let theta = 0.0;
     let phi = 0.0;
+    let dr = 5.0 * Math.PI/180.0;
+
+    let  fovy = 50.0;       //field-of-view in Y direction angle (in degrees)
+    let  aspect = 1.0;      //viewport aspect ratio
+    let rotateXZ = 0.0;     //rotation in xz plane (in degrees)
 
     let left = -2.0;
     let right = 2.0;
@@ -23,7 +29,8 @@ let renderWindow = function () {
 
     let timesToSubdivide = 5;
 
-    let modelViewMatrix, projectionMatrix, eye, modelViewMatrixLocation, projectionMatrixLocation;
+    let modelViewMatrix, projectionMatrix, eye,
+        modelViewMatrixLocation, projectionMatrixLocation;
 
     let at = vec3(0.0, 0.0, 0.0);
     let up = vec3(0.0, 1.0, 0.0);
@@ -36,6 +43,8 @@ let renderWindow = function () {
 
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
+
+        aspect =  canvas.width/canvas.height;
 
         gl.enable(gl.DEPTH_TEST);
 
@@ -59,6 +68,32 @@ let renderWindow = function () {
         modelViewMatrixLocation = gl.getUniformLocation(program, "uModelViewMatrix");
         projectionMatrixLocation = gl.getUniformLocation(program, "uProjectionMatrix");
 
+        // document.getElementById("zFarSlider").onchange = function(event) {
+        //     far = event.target.value;
+        // };
+        // document.getElementById("zNearSlider").onchange = function(event) {
+        //     near = event.target.value;
+        // };
+        // document.getElementById("radiusSlider").onchange = function(event) {
+        //     radius = event.target.value;
+        // };
+        // document.getElementById("thetaSlider").onchange = function(event) {
+        //     theta = event.target.value* Math.PI/180.0;
+        // };
+        // document.getElementById("phiSlider").onchange = function(event) {
+        //     phi = event.target.value* Math.PI/180.0;
+        // };
+        // document.getElementById("aspectSlider").onchange = function(event) {
+        //     aspect = event.target.value;
+        // };
+        document.getElementById("fovSlider").onchange = function(event) {
+            fovy = event.target.value;
+        };
+
+        document.getElementById("rotateXZSlider").onchange = function(event) {
+            rotateXZ = event.target.value;
+        }
+
         render();
     }
 
@@ -69,20 +104,24 @@ let renderWindow = function () {
         eye = vec3(radius * Math.sin(theta) * Math.cos(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(theta));
 
         modelViewMatrix = lookAt(eye, at, up);
-        projectionMatrix = ortho(left, right, bottom, top, near, far);
+        projectionMatrix = perspective(fovy, aspect, near, far);
 
         gl.uniformMatrix4fv(modelViewMatrixLocation, false, flatten(modelViewMatrix));
         gl.uniformMatrix4fv(projectionMatrixLocation, false, flatten(projectionMatrix));
 
         //for wire mesh
-        // for (let i = 0; i < sphere.index; i += 3) {
-        //     gl.drawArrays(gl.LINE_LOOP, i, 3);
-        // }
+        for (let i = 0; i < sphere.index; i += 3) {
+            gl.drawArrays(gl.LINE_LOOP, i, 3);
+        }
 
         //for solid sphere
-        gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
+        //gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
 
         requestAnimationFrame(render);
+    }
+
+    function moveCamera() {
+
     }
 }
 
