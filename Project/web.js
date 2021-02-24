@@ -32,6 +32,9 @@ let renderWindow = function () {
     let modelViewMatrix, projectionMatrix, eye,
         modelViewMatrixLocation, projectionMatrixLocation;
 
+    let cameraMatrix = mat4();
+    let cameraAngleRotation = 0.0;
+
     let at = vec3(0.0, 0.0, 0.0);
     let up = vec3(0.0, 1.0, 0.0);
 
@@ -67,31 +70,13 @@ let renderWindow = function () {
         //get uniform variable memory location from program
         modelViewMatrixLocation = gl.getUniformLocation(program, "uModelViewMatrix");
         projectionMatrixLocation = gl.getUniformLocation(program, "uProjectionMatrix");
-
-        // document.getElementById("zFarSlider").onchange = function(event) {
-        //     far = event.target.value;
-        // };
-        // document.getElementById("zNearSlider").onchange = function(event) {
-        //     near = event.target.value;
-        // };
-        // document.getElementById("radiusSlider").onchange = function(event) {
-        //     radius = event.target.value;
-        // };
-        // document.getElementById("thetaSlider").onchange = function(event) {
-        //     theta = event.target.value* Math.PI/180.0;
-        // };
-        // document.getElementById("phiSlider").onchange = function(event) {
-        //     phi = event.target.value* Math.PI/180.0;
-        // };
-        // document.getElementById("aspectSlider").onchange = function(event) {
-        //     aspect = event.target.value;
-        // };
+        
         document.getElementById("fovSlider").onchange = function(event) {
             fovy = event.target.value;
         };
 
         document.getElementById("rotateXZSlider").onchange = function(event) {
-            rotateXZ = event.target.value;
+            theta = event.target.value * (Math.PI/180);
         }
 
         render();
