@@ -4,6 +4,8 @@
 //create gui interface with bootstrap
 //https://webgl2fundamentals.org/webgl/lessons/webgl-visualizing-the-camera.html
 
+let timesToSubdivide = 5;
+
 let renderWindow = function () {
     let canvas;
     let gl;
@@ -16,27 +18,35 @@ let renderWindow = function () {
     let radius = 7.0;
     let theta = 0.0;
     let phi = 0.0;
-    let dr = 5.0 * Math.PI/180.0;
 
     let  fovy = 50.0;       //field-of-view in Y direction angle (in degrees)
     let  aspect = 1.0;      //viewport aspect ratio
-    let rotateXZ = 0.0;     //rotation in xz plane (in degrees)
 
     let left = -2.0;
     let right = 2.0;
     let bottom = -2.0;
     let top = 2.0;
 
-    let timesToSubdivide = 5;
 
-    let modelViewMatrix, projectionMatrix, eye,
-        modelViewMatrixLocation, projectionMatrixLocation;
+
+    let modelViewMatrix, projectionMatrix, normalSphereMatrix, eye,
+        modelViewMatrixLocation, projectionMatrixLocation, normalMatrixLocation;
 
     let cameraMatrix = mat4();
     let cameraAngleRotation = 0.0;
 
     let at = vec3(0.0, 0.0, 0.0);
     let up = vec3(0.0, 1.0, 0.0);
+
+    let lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
+    let lightAmbient = vec4(0.0, 0.0, 0.0, 1.0);
+    let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
+    let lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
+
+    let materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
+    let materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
+    let materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
+    let materialShininess = 20.0;
 
     window.onload = function init() {
 
@@ -67,16 +77,47 @@ let renderWindow = function () {
         gl.vertexAttribPointer(aPosition, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aPosition);
 
+        const aNormal = gl.getAttribLocation(program, "aNormal");
+        gl.vertexAttribPointer(aNormal, 4, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aNormal);
+
+        const normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, flatten(sphere.normals), gl.STATIC_DRAW);
+
+
+
+
+
         //get uniform variable memory location from program
         modelViewMatrixLocation = gl.getUniformLocation(program, "uModelViewMatrix");
         projectionMatrixLocation = gl.getUniformLocation(program, "uProjectionMatrix");
-        
+        normalMatrixLocation = gl.getUniformLocation(program, "uNormalMatrix");
+
+        //light matrices
+        let ambientProduct = mult(lightAmbient, materialAmbient);
+        let diffuseProduct = mult(lightDiffuse, materialDiffuse);
+        let specularProduct = mult(lightSpecular, materialSpecular);
+
+        //light uniforms sent to fragment shader
+        gl.uniform4fv(gl.getUniformLocation(program, "uAmbientProduct"), flatten(ambientProduct));
+        gl.uniform4fv(gl.getUniformLocation(program, "uDiffuseProduct"), flatten(diffuseProduct));
+        gl.uniform4fv(gl.getUniformLocation(program, "uSpecularProduct"), flatten(specularProduct));
+        gl.uniform4fv(gl.getUniformLocation(program, "uLightPosition"), flatten(lightPosition));
+        gl.uniform1f(gl.getUniformLocation(program, "uShininess"), materialShininess);
+
+
         document.getElementById("fovSlider").onchange = function(event) {
             fovy = event.target.value;
         };
 
         document.getElementById("rotateXZSlider").onchange = function(event) {
             theta = event.target.value * (Math.PI/180);
+        }
+
+        document.getElementById("divideSlider").onchange = function(event) {
+            timesToSubdivide = event.target.value;
+            init();
         }
 
         render();
@@ -91,22 +132,21 @@ let renderWindow = function () {
         modelViewMatrix = lookAt(eye, at, up);
         projectionMatrix = perspective(fovy, aspect, near, far);
 
+        normalSphereMatrix = normalMatrix(modelViewMatrix, true);
+
         gl.uniformMatrix4fv(modelViewMatrixLocation, false, flatten(modelViewMatrix));
         gl.uniformMatrix4fv(projectionMatrixLocation, false, flatten(projectionMatrix));
+        gl.uniformMatrix3fv(normalMatrixLocation, false, flatten(normalSphereMatrix))
 
         //for wire mesh
-        for (let i = 0; i < sphere.index; i += 3) {
-            gl.drawArrays(gl.LINE_LOOP, i, 3);
-        }
+        //for (let i = 0; i < sphere.index; i += 3) {
+        //     gl.drawArrays(gl.LINE_LOOP, i, 3);
+        //}
 
         //for solid sphere
-        //gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
+        gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
 
         requestAnimationFrame(render);
-    }
-
-    function moveCamera() {
-
     }
 }
 
