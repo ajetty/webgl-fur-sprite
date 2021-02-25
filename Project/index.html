@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../Common/initShaders2.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
 <script type="text/javascript" src="CreateSphere.js"></script>
+<script type="text/javascript" src="Texture.js"></script>
 <script type="text/javascript" src="Menu.js"></script>
 <script type="text/javascript" src="web.js"></script>
 <body>
@@ -45,8 +46,8 @@
                         </div>
                         <div class="slidecontainer">
                             <label>Divide:&nbsp;&nbsp;&nbsp;</label><label id="sliderSubdivide">5</label><br>
-                            0<input type="range" min="0" max="20" value="5" step="1" class="slider" id="divideSlider"
-                                    oninput="changeDivide(this.value)">20
+                            0<input type="range" min="0" max="5" value="5" step="1" class="slider" id="divideSlider"
+                                    oninput="changeDivide(this.value)">5
                         </div>
                         <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                     </div>
@@ -55,5 +56,6 @@
         </div>
     </div>
 </div>
+<img id="imageTexture" src="../Images/baseTexture.png"></img>
 </body>
 </html>

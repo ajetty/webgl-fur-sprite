@@ -1,4 +1,6 @@
-let createSphere = function (timesToSubdivide) {
+"use strict";
+
+let createSphere = function(timesToSubdivide) {
     let sphereVertices = [];
     let sphereNormals = [];
     let index = 0;
@@ -16,9 +18,18 @@ let createSphere = function (timesToSubdivide) {
 
         sphereNormals.push(vec4(a[0], a[1], a[2], 0.0));
         sphereNormals.push(vec4(b[0], b[1], b[2], 0.0));
-        sphereNormals.push(vec4(c[0], c[1], c[3], 0.0));
+        sphereNormals.push(vec4(c[0], c[1], c[2], 0.0));
 
         index += 3; //keeps track of where we are in size with the vertices in array
+    }
+
+    function cartesianToSpherical(p)
+    {
+        let r = length(p);
+        let theta = Math.acos(p.z/r)
+        let fi = Math.atan(p.y/p.x)
+        let uv = vec2(theta,fi);
+        return
     }
 
     //sierpinski's gasket for reference on how we are subdividing this triangle recursively

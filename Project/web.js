@@ -1,17 +1,17 @@
 "use strict";
 
-//draw a sphere
-//create gui interface with bootstrap
+//create base texture
 //https://webgl2fundamentals.org/webgl/lessons/webgl-visualizing-the-camera.html
 
 let timesToSubdivide = 5;
+let gl;
 
 let renderWindow = function () {
     let canvas;
-    let gl;
     let program;
 
     let sphere;
+    let baseTexture;
 
     let near = 0.1;
     let far = 14.0;
@@ -38,7 +38,7 @@ let renderWindow = function () {
     let at = vec3(0.0, 0.0, 0.0);
     let up = vec3(0.0, 1.0, 0.0);
 
-    let lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
+    let lightPosition = vec4(1.0, 1.0, 0.5, 0.0);
     let lightAmbient = vec4(0.0, 0.0, 0.0, 1.0);
     let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     let lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
@@ -62,12 +62,13 @@ let renderWindow = function () {
         gl.enable(gl.DEPTH_TEST);
 
         sphere = createSphere(timesToSubdivide);
+        baseTexture = createTexture(sphere.vertices);
 
         //load shaders and initialize attribute buffers, create shader program
         program = initShaders(gl, "vertexShader.glsl", "fragmentShader.glsl");
         gl.useProgram(program);
 
-        //load vertex buffer data into gpu,
+        //load vertex buffer data into gpu
         const vBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, flatten(sphere.vertices), gl.STATIC_DRAW);
@@ -77,17 +78,27 @@ let renderWindow = function () {
         gl.vertexAttribPointer(aPosition, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aPosition);
 
+        //load normal buffer data into gpu,
+        const nBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, flatten(sphere.normals), gl.STATIC_DRAW);
+
         const aNormal = gl.getAttribLocation(program, "aNormal");
         gl.vertexAttribPointer(aNormal, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aNormal);
 
-        const normalBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, flatten(sphere.normals), gl.STATIC_DRAW);
+        //load texture buffer data into gpu,
+        let tBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, tBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, flatten(baseTexture.textureCoordsArray), gl.STATIC_DRAW);
 
+        let aTexCoord = gl.getAttribLocation(program, "aTexCoord");
+        gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aTexCoord);
 
-
-
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, baseTexture.texture);
+        gl.uniform1i(gl.getUniformLocation(program, "uTexture"), 0);
 
         //get uniform variable memory location from program
         modelViewMatrixLocation = gl.getUniformLocation(program, "uModelViewMatrix");
@@ -104,6 +115,7 @@ let renderWindow = function () {
         gl.uniform4fv(gl.getUniformLocation(program, "uDiffuseProduct"), flatten(diffuseProduct));
         gl.uniform4fv(gl.getUniformLocation(program, "uSpecularProduct"), flatten(specularProduct));
         gl.uniform4fv(gl.getUniformLocation(program, "uLightPosition"), flatten(lightPosition));
+
         gl.uniform1f(gl.getUniformLocation(program, "uShininess"), materialShininess);
 
 
@@ -139,12 +151,12 @@ let renderWindow = function () {
         gl.uniformMatrix3fv(normalMatrixLocation, false, flatten(normalSphereMatrix))
 
         //for wire mesh
-        //for (let i = 0; i < sphere.index; i += 3) {
-        //     gl.drawArrays(gl.LINE_LOOP, i, 3);
-        //}
+        for (let i = 0; i < sphere.vertices.length; i += 3) {
+            gl.drawArrays(gl.LINE_LOOP, i, 3);
+        }
 
         //for solid sphere
-        gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
+        //gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
 
         requestAnimationFrame(render);
     }

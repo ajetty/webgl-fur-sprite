@@ -3,7 +3,10 @@ precision mediump float;
 
 in vec4 aPosition;
 in vec4 aNormal;
+in vec2 aTexCoord;
+
 out vec3 N, L, E;
+out vec2 vTexCoord;
 
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
@@ -27,5 +30,7 @@ void main()
     N = normalize( uNormalMatrix*aNormal.xyz);
 
     gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
+
+    vTexCoord = aTexCoord;
 
 }
