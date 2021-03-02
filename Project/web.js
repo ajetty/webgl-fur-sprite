@@ -1,7 +1,6 @@
 "use strict";
 
-//create base texture
-//https://webgl2fundamentals.org/webgl/lessons/webgl-visualizing-the-camera.html
+//test trying to get rid of seam on sphere
 
 let timesToSubdivide = 5;
 let gl;
@@ -27,7 +26,7 @@ let renderWindow = function () {
     let bottom = -2.0;
     let top = 2.0;
 
-
+    let vertexColors = [];
 
     let modelViewMatrix, projectionMatrix, normalSphereMatrix, eye,
         modelViewMatrixLocation, projectionMatrixLocation, normalMatrixLocation;
@@ -38,13 +37,13 @@ let renderWindow = function () {
     let at = vec3(0.0, 0.0, 0.0);
     let up = vec3(0.0, 1.0, 0.0);
 
-    let lightPosition = vec4(1.0, 1.0, 0.5, 0.0);
+    let lightPosition = vec4(0.1, 2.7, 2.9, 0.0);
     let lightAmbient = vec4(0.0, 0.0, 0.0, 1.0);
     let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     let lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
-    let materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
-    let materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
+    let materialAmbient = vec4(1.0, 1.0, 1.0, 1.0);
+    let materialDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     let materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
     let materialShininess = 20.0;
 
@@ -100,6 +99,8 @@ let renderWindow = function () {
         gl.bindTexture(gl.TEXTURE_2D, baseTexture.texture);
         gl.uniform1i(gl.getUniformLocation(program, "uTexture"), 0);
 
+
+
         //get uniform variable memory location from program
         modelViewMatrixLocation = gl.getUniformLocation(program, "uModelViewMatrix");
         projectionMatrixLocation = gl.getUniformLocation(program, "uProjectionMatrix");
@@ -135,6 +136,29 @@ let renderWindow = function () {
         render();
     }
 
+    //for seam detection purpose
+    function createColorList() {
+        let red = 0;
+        let green = 0;
+        let blue = 0;
+
+        //vertexColors.push(vec4(0.0, 0.0, 0.0, 1.0));
+
+        let total = baseTexture.textureCoordsArray/(256 * 3);
+
+        for(let i = 0; i < total; i++) {
+            for(let r = 0; r < 256; r++) {
+                vertexColors.push(vec4(1.0, 0.0, 0.0, 1.0));
+            }
+            for(let g = 0; g < 256; g++) {
+                vertexColors.push(vec4(0.0, 1.0, 0.0, 1.0));
+            }
+            for(let b = 0; b < 256; b++) {
+                vertexColors.push(vec4(0.0, 0.0, 1.0, 1.0));
+            }
+        }
+    }
+
 
     function render() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -151,12 +175,14 @@ let renderWindow = function () {
         gl.uniformMatrix3fv(normalMatrixLocation, false, flatten(normalSphereMatrix))
 
         //for wire mesh
-        for (let i = 0; i < sphere.vertices.length; i += 3) {
-            gl.drawArrays(gl.LINE_LOOP, i, 3);
-        }
+        //for (let i = 0; i < sphere.vertices.length; i += 3) {
+        //    gl.drawArrays(gl.LINE_LOOP, i, 3);
+        //}
 
         //for solid sphere
-        //gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length)
+        gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length);
+
+
 
         requestAnimationFrame(render);
     }

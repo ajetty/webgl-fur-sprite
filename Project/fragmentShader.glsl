@@ -11,6 +11,7 @@ uniform sampler2D uTexture;
 in vec3 N, L, E;
 in vec2 vTexCoord;
 
+
 out vec4 fColor;
 
 void main()
@@ -29,6 +30,8 @@ void main()
     vec4 vColor = ambient + diffuse + specular;
     vColor.a = 1.0;
 
-    fColor = vColor * (texture(uTexture,vTexCoord));
+
+    fColor = vColor*(texture(uTexture,vTexCoord));
     //fColor = vec4(vTexCoord.x,vTexCoord.y,0,1);
+    //fColor = vec4(st.x,st.y,0,1);
 }
