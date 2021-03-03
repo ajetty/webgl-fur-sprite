@@ -1,8 +1,8 @@
 "use strict";
 
-let createTexture = function(vertices) {
+let createFurTexture = function(vertices) {
 
-    let texture = 256;
+    let texture = 3500;
 
     let textureCoordsArray = [];
 
@@ -45,24 +45,14 @@ let createTexture = function(vertices) {
             //console.log("  ");
         }
 
-
-        // if(uv[1] > minBoundary) {
-        //     console.log(`Before: ${uv[0]} ${uv[1]}`)
-        //     uv[0] = 1.0;
-        //     //uv[1] = 0.9;
-        //     console.log(`After: ${uv[0]} ${uv[1]}`)
-        // }
-
         lastUV = uv;
-
-        //console.log(`${uv[0]} ${uv[1]}`);
 
         return uv;
     }
 
     function createImage() {
         let image = new Image();
-        image.src = '../Images/baseTexture.png';
+        image.src = '../Images/seamless-giraffe-fur-background.jpg';
 
         texture = gl.createTexture();
 

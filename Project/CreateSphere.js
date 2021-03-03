@@ -18,47 +18,15 @@ let createSphere = function (timesToSubdivide) {
     function pushTriangleVertices(a, b, c) {
         index += 3; //keeps track of where we are in size with the vertices in array
 
-        // if(a[0] > threshold || b[0] > threshold || c[0] > threshold) {
-        //     console.log("test");
-        //     if(a[0] < 1.0 - threshold) {
-        //         a = add(a, posIncrease);
-        //     }
-        //     if(b[0] < 1.0 - threshold) {
-        //         b = add(b, posIncrease);
-        //     }
-        //     if(c[0] < 1.0 - threshold) {
-        //         c = add(c, posIncrease);
-        //     }
-        //
-        // }
-
         sphereVertices.push(a);
         sphereVertices.push(b);
         sphereVertices.push(c);
-
-        // let aLength = distance(a,b);
-        // let bLength = distance(b,c);
-        // let cLength = distance(a,c);
-
-        //console.log(`triangle: ${aLength} ${bLength} ${cLength}`);
-
-        //let minDistance = Math.min(aLength,bLength,cLength);
-
-        // if(minDistance < boundary) {
-        //     console.log(`min: ${minDistance} pos: ${a} ${b} ${c}`);
-        //     a = add(a, posIncrease);
-        //     b = add(b, posIncrease);
-        //     c = add(c, posIncrease);
-        //
-        //     console.log(`CHANGED: ${a} ${b} ${c}`);
-        // }
 
 
         sphereNormals.push(vec4(a[0], a[1], a[2], 0.0));
         sphereNormals.push(vec4(b[0], b[1], b[2], 0.0));
         sphereNormals.push(vec4(c[0], c[1], c[2], 0.0));
 
-        //console.log(`INDEX: ${index}`);
     }
 
     function distance(p1, p2) {

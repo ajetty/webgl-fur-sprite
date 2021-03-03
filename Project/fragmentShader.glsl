@@ -6,7 +6,8 @@ uniform vec4 uDiffuseProduct;
 uniform vec4 uSpecularProduct;
 uniform float uShininess;
 
-uniform sampler2D uTexture;
+uniform sampler2D uBaseTexture;
+uniform sampler2D uFurTexture;
 
 in vec3 N, L, E;
 in vec2 vTexCoord;
@@ -22,16 +23,17 @@ void main()
     float Kd = max( dot(L, N), 0.0 );
     vec4  diffuse = Kd * uDiffuseProduct;
 
+    vec4 diffuseCombine = (diffuse + ambient) * texture(uFurTexture,vTexCoord);
+
     float Ks = pow( max(dot(N, H), 0.0), uShininess );
     vec4  specular = Ks * uSpecularProduct;
 
-    if( dot(L, N) < 0.0 ) specular = vec4(0.0, 0.0, 0.0, 1.0);
+    if( dot(L, N) < 0.0 )
+        specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-    vec4 vColor = ambient + diffuse + specular;
-    vColor.a = 1.0;
+    vec4 vColor = diffuseCombine + specular;
+    vColor.a = texture(uBaseTexture,vTexCoord).r;
 
-
-    fColor = vColor*(texture(uTexture,vTexCoord));
+    fColor = vColor;
     //fColor = vec4(vTexCoord.x,vTexCoord.y,0,1);
-    //fColor = vec4(st.x,st.y,0,1);
 }

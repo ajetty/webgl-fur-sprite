@@ -1,6 +1,6 @@
 "use strict";
 
-//test trying to get rid of seam on sphere
+//look up alpha blending
 
 let timesToSubdivide = 5;
 let gl;
@@ -11,6 +11,7 @@ let renderWindow = function () {
 
     let sphere;
     let baseTexture;
+    let furTexture;
 
     let near = 0.1;
     let far = 14.0;
@@ -58,10 +59,13 @@ let renderWindow = function () {
 
         aspect =  canvas.width/canvas.height;
 
-        gl.enable(gl.DEPTH_TEST);
+        gl.disable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         sphere = createSphere(timesToSubdivide);
-        baseTexture = createTexture(sphere.vertices);
+        baseTexture = createBaseTexture(sphere.vertices);
+        furTexture = createFurTexture(sphere.vertices);
 
         //load shaders and initialize attribute buffers, create shader program
         program = initShaders(gl, "vertexShader.glsl", "fragmentShader.glsl");
@@ -95,9 +99,15 @@ let renderWindow = function () {
         gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aTexCoord);
 
+        //base texture
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, baseTexture.texture);
-        gl.uniform1i(gl.getUniformLocation(program, "uTexture"), 0);
+        gl.uniform1i(gl.getUniformLocation(program, "uBaseTexture"), 0);
+
+        //fur texture
+        gl.activeTexture(gl.TEXTURE0+1);
+        gl.bindTexture(gl.TEXTURE_2D, furTexture.texture);
+        gl.uniform1i(gl.getUniformLocation(program, "uFurTexture"), 1);
 
 
 
@@ -181,8 +191,6 @@ let renderWindow = function () {
 
         //for solid sphere
         gl.drawArrays(gl.TRIANGLES, 0, sphere.vertices.length);
-
-
 
         requestAnimationFrame(render);
     }
