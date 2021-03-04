@@ -1,10 +1,12 @@
 "use strict";
 
-let createFurTexture = function(vertices) {
+let createFurTexture = function(vertices, layers) {
 
     let texture = 3500;
 
     let textureCoordsArray = [];
+
+    let alpha = [...Array(layers+1).keys()];
 
     let texCoord = [
         vec2(0, 0),
@@ -75,5 +77,5 @@ let createFurTexture = function(vertices) {
     createTextureCoordsArray();
     createImage();
 
-    return {"textureCoordsArray": textureCoordsArray, "texture": texture};
+    return {"textureCoordsArray": textureCoordsArray, "texture": texture, "alpha": alpha};
 }

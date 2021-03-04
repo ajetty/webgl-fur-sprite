@@ -9,3 +9,7 @@ function changeRotateXZ(value) {
 function changeDivide(value) {
     document.getElementById("sliderSubdivide").innerHTML = value;
 }
+
+function changeLayers(value) {
+    document.getElementById("sliderLayers").innerHTML = value;
+}
