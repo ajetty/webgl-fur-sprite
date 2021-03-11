@@ -13,3 +13,11 @@ function changeDivide(value) {
 function changeLayers(value) {
     document.getElementById("sliderLayers").innerHTML = value;
 }
+
+function changeHairLength(value) {
+    document.getElementById("sliderHairLength").innerHTML = value;
+}
+
+function changeHairDroop(value) {
+    document.getElementById("sliderHairDroop").innerHTML = value;
+}

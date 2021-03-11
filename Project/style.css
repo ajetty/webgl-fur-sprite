@@ -1,7 +1,10 @@
 canvas {
-    border: 5px solid black ;
+    border: 5px solid black;
 }
 
+.img_container {
+    border: 2px solid black;
+}
 
 html, body {
     height: 100%;

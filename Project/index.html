@@ -19,50 +19,63 @@
 <script type="text/javascript" src="web.js"></script>
 <body>
 
-
-<div class="container h-100">
-    <div class="row h-100">
-        <div class="col-md-auto mx-auto my-auto mr-0">
-            <div class="card-group">
-                <div class="card">
-                    <div class="card-body">
-                        <canvas id="gl-canvas" width="512" height="512" style="float: none; margin: 0 auto;">
-                            Oops ... your browser doesn't support the HTML5 canvas element
-                        </canvas>
-                    </div>
+<div class="container my-5">
+<div class="card mb-4">
+    <div class="row no-gutters">
+        <div class="col-md-auto">
+            <div class="card-img">
+                <canvas id="gl-canvas" width="512" height="512" style="float: none; margin: 0 auto;">
+                    Oops ... your browser doesn't support the HTML5 canvas element
+                </canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h5 class="card-title">Camera Controls</h5>
+                <p class="card-text">Use the sliders to change inputs.</p>
+                <div class="slidecontainer">
+                    <label>Field of View:&nbsp;&nbsp;&nbsp;</label><label id="sliderFOV">26</label><br>
+                    1<input type="range" min="1" max="100" value="26" step="1" class="slider" id="fovSlider"
+                            oninput="changeFOV(this.value)">100
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Camera Controls</h5>
-                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                        <div class="slidecontainer">
-                            <label>Field of View:&nbsp;&nbsp;&nbsp;</label><label id="sliderFOV">50</label><br>
-                            1<input type="range" min="1" max="100" value="50" step="1" class="slider" id="fovSlider"
-                                   oninput="changeFOV(this.value)">100
-                        </div>
-                        <div class="slidecontainer">
-                            <label>Rotate:&nbsp;&nbsp;&nbsp;</label><label id="sliderRotateXZValue">0</label><label>&nbsp;&nbsp;&nbsp;degrees</label><br>
-                            0<input type="range" min="0" max="360" value="0" step="1" class="slider" id="rotateXZSlider"
-                                   oninput="changeRotateXZ(this.value)">360
-                        </div>
-                        <div class="slidecontainer">
-                            <label>Divide:&nbsp;&nbsp;&nbsp;</label><label id="sliderSubdivide">5</label><br>
-                            0<input type="range" min="0" max="5" value="5" step="1" class="slider" id="divideSlider"
-                                    oninput="changeDivide(this.value)">5
-                        </div>
-                        <div class="slidecontainer">
-                            <label>Layers:&nbsp;&nbsp;&nbsp;</label><label id="sliderLayers">5</label><br>
-                            0<input type="range" min="0" max="50" value="5" step="1" class="slider" id="layerSlider"
-                                    oninput="changeLayers(this.value)">50
-                        </div>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    </div>
+                <div class="slidecontainer">
+                    <label>Rotate:&nbsp;&nbsp;&nbsp;</label><label id="sliderRotateXZValue">0</label><label>&nbsp;&nbsp;&nbsp;degrees</label><br>
+                    0<input type="range" min="0" max="360" value="0" step="1" class="slider" id="rotateXZSlider"
+                            oninput="changeRotateXZ(this.value)">360
+                </div>
+                <div class="slidecontainer">
+                    <label>Divide:&nbsp;&nbsp;&nbsp;</label><label id="sliderSubdivide">5</label><br>
+                    0<input type="range" min="0" max="5" value="5" step="1" class="slider" id="divideSlider"
+                            oninput="changeDivide(this.value)">5
+                </div>
+                <div class="slidecontainer">
+                    <label>Layers:&nbsp;&nbsp;&nbsp;</label><label id="sliderLayers">50</label><br>
+                    2<input type="range" min="2" max="800" value="50" step="1" class="slider" id="layerSlider"
+                            oninput="changeLayers(this.value)">800
+                </div>
+                <div class="slidecontainer">
+                    <label>Hair Length:&nbsp;&nbsp;&nbsp;</label><label id="sliderHairLength">3</label><br>
+                    0<input type="range" min="0" max="10" value="3" step="0.1" class="slider" id="hairLengthSlider"
+                            oninput="changeHairLength(this.value)">10
+                </div>
+                <div class="slidecontainer">
+                    <label>Hair Droop:&nbsp;&nbsp;&nbsp;</label><label id="sliderHairDroop">2</label><br>
+                    0<input type="range" min="0" max="10" value="2" step="1" class="slider" id="hairDroopSlider"
+                            oninput="changeHairDroop(this.value)">10
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">Textures</h5>
+                <img title="Base Texture" src="../Images/baseTexture.png"></img>
+                <img title="Fur Texture" id="imageFurTexture" src="../Images/seamless-giraffe-fur-background.jpg" width="256px" height="256"></img>
+            </div>
+        </div>
+    </div>
 </div>
-<img id="imageBaseTexture" src="../Images/baseTexture.png"></img>
-<img id="imageFurTexture" src="../Images/seamless-giraffe-fur-background.jpg" width="256px" height="256"></img>
+</div>
 </body>
 </html>

@@ -29,18 +29,6 @@ let createSphere = function (timesToSubdivide) {
 
     }
 
-    function distance(p1, p2) {
-        let distAB = Math.sqrt(Math.pow((p1[0] - p2[0]), 2) + Math.pow((p1[1] - p2[1]), 2) + Math.pow((p1[2] - p2[2]), 2));
-        return distAB;
-    }
-
-    function cartesianToSpherical(p) {
-        let r = length(p);
-        let theta = Math.acos(p.z / r)
-        let fi = Math.atan(p.y / p.x)
-        let uv = vec2(theta, fi);
-        return
-    }
 
     //sierpinski's gasket for reference on how we are subdividing this triangle recursively
     function divideTriangle(a, b, c, count) {

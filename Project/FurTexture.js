@@ -32,8 +32,7 @@ let createFurTexture = function(vertices, layers) {
         let r = 1;
         let theta = Math.acos(p[1] / r) / 3.14 + 0.5;
         let fi = Math.atan2(p[2],p[0]) / 6.28 + 0.5;
-        let uv = vec2(theta,fi);
-
+        let uv = vec2(theta, fi);
 
         let sDiff = Math.abs(uv[0] - lastUV[0]);
         let tDiff = Math.abs(uv[1] - lastUV[1]);
@@ -61,14 +60,8 @@ let createFurTexture = function(vertices, layers) {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
         gl.generateMipmap(gl.TEXTURE_2D);
 

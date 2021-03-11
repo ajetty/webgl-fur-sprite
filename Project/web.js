@@ -1,9 +1,13 @@
 "use strict";
 
-//look up alpha blending
+//create shadows for fur strands
+//fix lighting
 
 let timesToSubdivide = 5;
-let layers = 5;
+let layers = 50;
+let fovy = 26.0;   //field-of-view in Y direction angle (in degrees)
+let hairLength = 0.3;
+let hairDroop = 2.0;
 let gl;
 
 let renderWindow = function () {
@@ -24,8 +28,7 @@ let renderWindow = function () {
     let theta = 0.0;
     let phi = 0.0;
 
-    let  fovy = 50.0;       //field-of-view in Y direction angle (in degrees)
-    let  aspect = 1.0;      //viewport aspect ratio
+    let aspect = 1.0;      //viewport aspect ratio
 
     let left = -2.0;
     let right = 2.0;
@@ -34,7 +37,7 @@ let renderWindow = function () {
 
     let modelViewMatrix, projectionMatrix, normalSphereMatrix, eye,
         modelViewMatrixLocation, projectionMatrixLocation, normalMatrixLocation,
-        currentLayerLocation;
+        currentLayerLocation, hairLengthLocation, hairDroopLocation;
 
     let cameraMatrix = mat4();
     let cameraAngleRotation = 0.0;
@@ -43,23 +46,25 @@ let renderWindow = function () {
     let up = vec3(0.0, 1.0, 0.0);
 
     let lightPosition = vec4(0.1, 2.7, 2.9, 0.0);
-    let lightAmbient = vec4(0.0, 0.0, 0.0, 1.0);
+    let lightAmbient = vec4(0.4, 0.4, 0.55, 1.0);
     let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     let lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
     let materialAmbient = vec4(1.0, 1.0, 1.0, 1.0);
     let materialDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
-    let materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
-    let materialShininess = 20.0;
+    let materialSpecular = vec4(0.25, 0.25, 0.25, 1.0);
+    let materialShininess = 10.0;
 
     window.onload = function init() {
 
         canvas = document.getElementById("gl-canvas");
-        gl = canvas.getContext('webgl2');
+        gl = canvas.getContext('webgl2', {alpha: false});
         if (!gl) alert("WebGL 2.0 isn't available");
 
         gl.viewport(0, 0, canvas.width, canvas.height);
+        //gl.clearColor(0.33, 0.33, 0.5, 1.0);
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
+
 
         aspect =  canvas.width/canvas.height;
 
@@ -77,12 +82,7 @@ let renderWindow = function () {
 
         //load shaders and initialize attribute buffers, create shader program
         program = initShaders(gl, "vertexShader.glsl", "fragmentShader.glsl");
-        //gl.useProgram(program);
-
-        program2 = initShaders(gl, "vertexShader2.glsl", "fragmentShader2.glsl");
-        //gl.useProgram(program2);
-
-
+        gl.useProgram(program);
 
         //load vertex buffer data into gpu
         const vBuffer = gl.createBuffer();
@@ -94,10 +94,6 @@ let renderWindow = function () {
         gl.vertexAttribPointer(aPosition, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aPosition);
 
-        const aPosition2 = gl.getAttribLocation(program2, "aPosition");
-        gl.vertexAttribPointer(aPosition2, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(aPosition2);
-
         //load normal buffer data into gpu,
         const nBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
@@ -106,10 +102,6 @@ let renderWindow = function () {
         const aNormal = gl.getAttribLocation(program, "aNormal");
         gl.vertexAttribPointer(aNormal, 4, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aNormal);
-
-        const aNormal2 = gl.getAttribLocation(program2, "aNormal");
-        gl.vertexAttribPointer(aNormal2, 4, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(aNormal2);
 
         //load texture buffer data into gpu,
         let tBuffer = gl.createBuffer();
@@ -120,38 +112,10 @@ let renderWindow = function () {
         gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(aTexCoord);
 
-        //load alpha buffer data into gpu
-        // let aBuffer = gl.createBuffer();
-        // gl.bindBuffer(gl.ARRAY_BUFFER, aBuffer);
-        // gl.bufferData(gl.ARRAY_BUFFER, flatten(furTexture.alpha), gl.STATIC_DRAW);
-        //
-        // let aAlpha = gl.getAttribLocation(program, "aAlpha");
-        // gl.vertexAttribPointer(aAlpha, 1, gl.FLOAT, false, 0, 0);
-        // gl.enableVertexAttribArray(aAlpha);
-
         //light matrices
         let ambientProduct = mult(lightAmbient, materialAmbient);
         let diffuseProduct = mult(lightDiffuse, materialDiffuse);
         let specularProduct = mult(lightSpecular, materialSpecular);
-
-        //use second program now
-        //gl.useProgram(program2);
-
-        //get uniform variable memory location from program
-        // modelViewMatrixLocation = gl.getUniformLocation(program2, "uModelViewMatrix");
-        // projectionMatrixLocation = gl.getUniformLocation(program2, "uProjectionMatrix");
-        // normalMatrixLocation = gl.getUniformLocation(program2, "uNormalMatrix");
-        //
-        // //light uniforms sent to fragment shader
-        // gl.uniform4fv(gl.getUniformLocation(program2, "uAmbientProduct"), flatten(ambientProduct));
-        // gl.uniform4fv(gl.getUniformLocation(program2, "uDiffuseProduct"), flatten(diffuseProduct));
-        // gl.uniform4fv(gl.getUniformLocation(program2, "uSpecularProduct"), flatten(specularProduct));
-        // gl.uniform4fv(gl.getUniformLocation(program2, "uLightPosition"), flatten(lightPosition));
-        //
-        // gl.uniform1f(gl.getUniformLocation(program2, "uShininess"), materialShininess);
-
-        //use first program first
-        gl.useProgram(program);
 
         //base texture
         gl.activeTexture(gl.TEXTURE0);
@@ -179,8 +143,20 @@ let renderWindow = function () {
         //get uniform layer variable memory location from program
         currentLayerLocation = gl.getUniformLocation(program, "uCurrentLayer");
 
-        //current layer uniform sent to fragment shader
-        gl.uniform1f(gl.getUniformLocation(program, "uCurrentLayer"), currentLayer);
+        //get uniform hair length variable memory location from program
+        hairLengthLocation = gl.getUniformLocation(program, "uHairLength");
+
+        //get uniform hair length variable memory location from program
+        hairDroopLocation = gl.getUniformLocation(program, "uHairDroop");
+
+        //current layer uniform sent to vertex shader
+        gl.uniform1f(currentLayerLocation, currentLayer);
+
+        //current hair length uniform sent to vertex shader
+        gl.uniform1f(hairLengthLocation, hairLength);
+
+        //current hair droop uniform sent to vertex shader
+        gl.uniform1f(hairDroopLocation, hairDroop);
 
 
         document.getElementById("fovSlider").onchange = function(event) {
@@ -198,6 +174,16 @@ let renderWindow = function () {
 
         document.getElementById("layerSlider").onchange = function(event) {
             layers = event.target.value;
+            init();
+        }
+
+        document.getElementById("hairLengthSlider").onchange = function(event) {
+            hairLength = event.target.value / 10; //range of 0 to 1.0
+            init();
+        }
+
+        document.getElementById("hairDroopSlider").onchange = function(event) {
+            hairDroop = event.target.value;
             init();
         }
 
@@ -227,7 +213,7 @@ let renderWindow = function () {
 
 
         //for solid furSphere
-        for(let i = 0; i <= layers; i++) {
+        for(let i = 0; i < layers; i++) {
             let current = i / (layers-1);
             gl.uniform1f(currentLayerLocation, current);
             gl.drawArrays(gl.TRIANGLES, 0, furSphere.vertices.length);
