@@ -4,10 +4,10 @@
 //fix lighting
 
 let timesToSubdivide = 5;
-let layers = 50;
+let layers = 110;
 let fovy = 26.0;   //field-of-view in Y direction angle (in degrees)
-let hairLength = 0.3;
-let hairDroop = 2.0;
+let hairLength = 0.4;
+let hairDroop = 3.0;
 let gl;
 
 let renderWindow = function () {
@@ -37,7 +37,9 @@ let renderWindow = function () {
 
     let modelViewMatrix, projectionMatrix, normalSphereMatrix, eye,
         modelViewMatrixLocation, projectionMatrixLocation, normalMatrixLocation,
-        currentLayerLocation, hairLengthLocation, hairDroopLocation;
+        currentLayerLocation, hairLengthLocation, hairDroopLocation, timeLocation;
+
+    let time;
 
     let cameraMatrix = mat4();
     let cameraAngleRotation = 0.0;
@@ -149,6 +151,9 @@ let renderWindow = function () {
         //get uniform hair length variable memory location from program
         hairDroopLocation = gl.getUniformLocation(program, "uHairDroop");
 
+        //get uniform hair length variable memory location from program
+        timeLocation = gl.getUniformLocation(program, "uTime");
+
         //current layer uniform sent to vertex shader
         gl.uniform1f(currentLayerLocation, currentLayer);
 
@@ -157,6 +162,9 @@ let renderWindow = function () {
 
         //current hair droop uniform sent to vertex shader
         gl.uniform1f(hairDroopLocation, hairDroop);
+
+        //current hair droop uniform sent to vertex shader
+        gl.uniform1f(timeLocation, time/1000.0);
 
 
         document.getElementById("fovSlider").onchange = function(event) {
@@ -187,11 +195,11 @@ let renderWindow = function () {
             init();
         }
 
-        render();
+        render(time);
     }
 
 
-    function render() {
+    function render(time) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         eye = vec3(radius * Math.sin(theta) * Math.cos(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(theta));
@@ -204,6 +212,11 @@ let renderWindow = function () {
         gl.uniformMatrix4fv(modelViewMatrixLocation, false, flatten(modelViewMatrix));
         gl.uniformMatrix4fv(projectionMatrixLocation, false, flatten(projectionMatrix));
         gl.uniformMatrix3fv(normalMatrixLocation, false, flatten(normalSphereMatrix))
+
+        //set time uniform
+        gl.uniform1f(timeLocation, time/1000.0);
+
+        //console.log(time/1000.0);
 
         //for wire mesh
         //for (let i = 0; i < furSphere.vertices.length; i += 3) {
