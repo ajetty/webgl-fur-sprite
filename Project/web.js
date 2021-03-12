@@ -8,6 +8,7 @@ let layers = 110;
 let fovy = 26.0;   //field-of-view in Y direction angle (in degrees)
 let hairLength = 0.4;
 let hairDroop = 3.0;
+let rotateFlag = false;
 let gl;
 
 let renderWindow = function () {
@@ -40,6 +41,7 @@ let renderWindow = function () {
         currentLayerLocation, hairLengthLocation, hairDroopLocation, timeLocation;
 
     let time;
+    let firstInit = true;
 
     let cameraMatrix = mat4();
     let cameraAngleRotation = 0.0;
@@ -64,9 +66,8 @@ let renderWindow = function () {
         if (!gl) alert("WebGL 2.0 isn't available");
 
         gl.viewport(0, 0, canvas.width, canvas.height);
-        //gl.clearColor(0.33, 0.33, 0.5, 1.0);
-        gl.clearColor(1.0, 1.0, 1.0, 1.0);
-
+        gl.clearColor(0.33, 0.33, 0.5, 1.0);
+        //gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
         aspect =  canvas.width/canvas.height;
 
@@ -171,10 +172,6 @@ let renderWindow = function () {
             fovy = event.target.value;
         };
 
-        document.getElementById("rotateXZSlider").onchange = function(event) {
-            theta = event.target.value * (Math.PI/180);
-        }
-
         document.getElementById("divideSlider").onchange = function(event) {
             timesToSubdivide = event.target.value;
             init();
@@ -187,20 +184,25 @@ let renderWindow = function () {
 
         document.getElementById("hairLengthSlider").onchange = function(event) {
             hairLength = event.target.value / 10; //range of 0 to 1.0
-            init();
+            gl.uniform1f(hairLengthLocation, hairLength);
         }
 
         document.getElementById("hairDroopSlider").onchange = function(event) {
             hairDroop = event.target.value;
-            init();
+            gl.uniform1f(hairDroopLocation, hairDroop);
         }
 
-        render(time);
+        if(firstInit) {
+            render(time);
+            firstInit = false;
+        }
     }
 
 
     function render(time) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        if(rotateFlag) { theta += 0.5 * (Math.PI/180); }
 
         eye = vec3(radius * Math.sin(theta) * Math.cos(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(theta));
 
@@ -216,14 +218,10 @@ let renderWindow = function () {
         //set time uniform
         gl.uniform1f(timeLocation, time/1000.0);
 
-        //console.log(time/1000.0);
-
         //for wire mesh
         //for (let i = 0; i < furSphere.vertices.length; i += 3) {
         //    gl.drawArrays(gl.LINE_LOOP, i, 3);
         //}
-
-
 
         //for solid furSphere
         for(let i = 0; i < layers; i++) {

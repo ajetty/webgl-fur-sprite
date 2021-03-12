@@ -2,8 +2,13 @@ function changeFOV(value) {
     document.getElementById("sliderFOV").innerHTML = value;
 }
 
-function changeRotateXZ(value) {
-    document.getElementById("sliderRotateXZValue").innerHTML = value;
+function changeRotate() {
+    rotateFlag = !rotateFlag;
+    if(rotateFlag) {
+        document.getElementById("rotateToggle").innerHTML = "ON";
+    }else {
+        document.getElementById("rotateToggle").innerHTML = "OFF";
+    }
 }
 
 function changeDivide(value) {
